@@ -2,7 +2,7 @@ import os
 from anthropic import Anthropic
 
 from dotenv import load_dotenv
-load_dotenv()
+load_dotenv(os.path.join(os.path.dirname(os.path.abspath(__file__)), '.env'))
 
 client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
@@ -32,7 +32,7 @@ def generate_quiz_questions(syllabus_text, num_questions=5):
     Generate questions that test deep understanding of the concepts, not questions about the syllabus structure or schedule."""
 
     message = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-5-20250929",
         max_tokens=2000,
         messages=[
             {"role": "user", "content": prompt}

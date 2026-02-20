@@ -1,6 +1,7 @@
 from PyPDF2 import PdfReader
 import os
 
+
 def extract_text_from_pdf(file_path):
     text = ""
     with open(file_path, 'rb') as file:
@@ -15,7 +16,7 @@ if __name__ == "__main__":
     print("PDF Parser Test")
     print("=" * 50)
 
-    # Get the directory where this script is located
+    
     script_dir = os.path.dirname(os.path.abspath(__file__))
     pdf_path = os.path.join(script_dir, "test.pdf")
 
