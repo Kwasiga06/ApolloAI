@@ -2,11 +2,11 @@ from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pdf_parser import extract_text_from_pdf
-from ai_prod import generate_quiz_questions
+from ai_prod import extract_topics_from_syllabus, generate_quiz_questions, generate_explanation
 import os
 import shutil
 
-app = FastAPI(title="Apollo API", version="1.0")
+app = FastAPI(title="WeekLi API", version="1.0")
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,13 +19,25 @@ app.add_middleware(
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
+
 class QuizRequest(BaseModel):
     syllabus_text: str
+    topic: str = None
     num_questions: int = 5
+
+
+class ExplainRequest(BaseModel):
+    question: str
+    options: dict
+    correct_answer: str
+    user_answer: str
+    topic: str
+
 
 @app.get("/")
 def read_root():
-    return {"message": "Apollo API is running", "version": "1.0.0"}
+    return {"message": "WeekLi API is running", "version": "1.0.0"}
+
 
 @app.post("/api/upload-syllabus")
 async def upload_syllabus(file: UploadFile = File()):
@@ -39,30 +51,42 @@ async def upload_syllabus(file: UploadFile = File()):
 
     try:
         syllabus_text = extract_text_from_pdf(file_location)
-        quiz_questions = generate_quiz_questions(syllabus_text)
-        return {"questions": quiz_questions}
+        topics = extract_topics_from_syllabus(syllabus_text)
+        return {"topics": topics, "syllabus_text": syllabus_text}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         os.remove(file_location)
 
+
 @app.post("/api/generate-quiz")
 async def generate_quiz(request: QuizRequest):
     try:
-        questions = generate_quiz_questions(request.syllabus_text, request.num_questions)
-        return {
-            "success": True,
-            "questions": questions,
-            "characters_extracted": len(request.syllabus_text)
-        }
+        questions = generate_quiz_questions(
+            request.syllabus_text,
+            request.num_questions,
+            request.topic,
+        )
+        return {"success": True, "questions": questions}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/api/explain")
+async def explain_answer(request: ExplainRequest):
+    try:
+        result = generate_explanation(
+            request.question,
+            request.options,
+            request.correct_answer,
+            request.user_answer,
+            request.topic,
+        )
+        return {"success": True, "explanation": result["explanation"]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
-    
-
-
-
-

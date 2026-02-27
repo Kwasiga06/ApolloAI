@@ -1,28 +1,72 @@
-Apollo AI:
+# WeekLi
 
-- An AI-powered academic assistant that helps college students master their coursework through intelligent daily quizzes.
-  
-- Apollo analyzes your course syllabi, understands what you're learning, and generates personalized quiz questions to reinforce your knowledge through spaced repetition.
+**The AI student review tool.** WeekLi analyzes your course syllabus and generates weekly quiz questions based on what your class is actually covering — so you stay sharp without burning out.
 
-🎯 Features
-Current (MVP - In Development)
+---
 
-- Syllabus Upload & Analysis: Upload course syllabi (PDF) and let AI extract topics, course structure, and key concepts
-  
-- AI-Generated Quiz Questions: 3-5 daily multiple choice questions tailored to your current coursework
-  
-- Adaptive Learning: Questions adjust based on your performance and current week's material
-  
-- Progress Tracking: Monitor your learning streaks and identify weak areas
+## How It Works
 
-Planned Features
+1. Upload your course syllabus (PDF)
+2. WeekLi reads the topics, sections, and week-by-week content
+3. AI generates targeted multiple-choice review questions focused on the current week's material
+4. Review, study, repeat — every week
 
-- Smart Exam Reminders: AI detects exam dates from syllabi and ramps up practice questions
+---
 
-- RateMyProfessor Integration: Analyzes professor reviews to tailor questions to their teaching style and common exam patterns
+## Features
 
-- Coursicle Integration: Auto-populate course information by university and course number
+### Current (MVP — In Development)
 
-- Multi-device Support: Web app accessible from any device (macOS widget coming later)
-  
-- Difficulty Adaptation: Dynamic question difficulty based on your mastery level
+- **Syllabus Upload & Analysis** — Upload a PDF syllabus; AI extracts topics, sections, and weekly content structure
+- **Weekly AI-Generated Questions** — Multiple-choice review questions tailored to what your class is covering this week
+- **Topic-Aware Questions** — Questions reflect the specific concepts, sections, and topics from the current week, not generic course overviews
+- **Instant Results** — Questions generated in seconds via the Claude AI API
+
+### Planned
+
+- **Week Selector** — Choose which week's material to review, not just the latest
+- **Smart Exam Mode** — AI detects upcoming exams from the syllabus and ramps up practice intensity
+- **RateMyProfessor Integration** — Tailor question style to your professor's known exam patterns
+- **Coursicle Integration** — Auto-populate courses by university and course number
+- **Progress Tracking** — Streaks, weak area detection, and mastery scores per topic
+- **Multi-device Support** — Web-first, macOS widget coming later
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React |
+| Backend | FastAPI (Python) |
+| AI | Claude (Anthropic API) |
+| PDF Parsing | PyPDF2 |
+
+---
+
+## Getting Started
+
+### Backend
+
+```bash
+cd backend
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+Add a `.env` file in `backend/` with your Anthropic API key:
+```
+ANTHROPIC_API_KEY=your_key_here
+```
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+App runs at `http://localhost:3000`, backend at `http://localhost:8000`.
